@@ -14,19 +14,17 @@ async def check_links(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     for link in links:
         if link in seen_links:
-            await update.message.delete()
+            try:
+                await update.message.delete()
+            except Exception as e:
+                print(e)
             return
 
         seen_links.add(link)
 
-def main():
-    app = Application.builder().token(TOKEN).build()
-
-    app.add_handler(
-        MessageHandler(filters.TEXT & ~filters.COMMAND, check_links)
-    )
-
-    app.run_polling()
+app = Application.builder().token(TOKEN).build()
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, check_links))
 
 if __name__ == "__main__":
-    main()
+    print("Bot starting...")
+    app.run_polling()
